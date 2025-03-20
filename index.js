@@ -31,4 +31,5 @@ const handler = hasTurnedVisible(testEl, () => {
   console.log('visible!');
 });
 
+handler();
 window.addEventListener('scroll', handler);
