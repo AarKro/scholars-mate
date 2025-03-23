@@ -33,9 +33,9 @@ const applyAnimationStyles = (element, duration = '1s', delay = '0') => {
   `;
 }
 
-const animatePathsById = (pathId, animateSpeedMultiplier = 1) => {
+const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier = 1) => {
   let accumulatedDelay = 0;
-  for (let i = 1; i <= 14; i++) {
+  for (let i = 1; i <= numberOfPaths; i++) {
     const id = `${pathId}${i}`;
     const element = document.getElementById(id);
     
@@ -48,8 +48,9 @@ const animatePathsById = (pathId, animateSpeedMultiplier = 1) => {
     handler();
     window.addEventListener('scroll', handler);
   
-    accumulatedDelay = pathLength + accumulatedDelay;
+    accumulatedDelay = pathLength + accumulatedDelay + 100; // add 100ms to add small pause between drawing strokes
   }
 }
 
-animatePathsById('pawn', 0.8);
+animatePathsById('pawn', 14, 1);
+animatePathsById('bishop', 21, 1);
