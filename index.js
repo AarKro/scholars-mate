@@ -25,11 +25,17 @@ const hasTurnedVisible = (el, callback) => {
   }
 }
 
-const testEl = document.getElementById('test');
+const getAnimationStyles = (duration) => `
+  animation: draw ${duration} ease-in forwards;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+`;
 
-const handler = hasTurnedVisible(testEl, () => {
-  console.log('visible!');
-});
+// const testEl = document.getElementById('test');
 
-handler();
-window.addEventListener('scroll', handler);
+// const handler = hasTurnedVisible(testEl, () => {
+//   console.log('visible!');
+// });
+
+// handler();
+// window.addEventListener('scroll', handler);
