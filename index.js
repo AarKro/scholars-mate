@@ -9,48 +9,71 @@ const isElementInViewport = (el) => {
   );
 }
 
-const hasTurnedVisible = (el, callback) => {
+const hasTurnedVisible = (pathId, numberOfPaths, callback) => {
   let visibility = false;
+
+  const elements = [];
+  for (let i = 1; i <= numberOfPaths; i++) {
+    const id = `${pathId}${i}`;
+    const element = document.getElementById(id);
+    elements.push(element);
+  }
+
   return () => {
     if (visibility) {
       return;
     }
 
-    const isVisible = isElementInViewport(el);
+    const isVisible = elements.every((el) => isElementInViewport(el));
 
     if (isVisible) {
       visibility = true;
-      callback();
+      callback(elements);
     }
   }
 }
 
-const applyAnimationStyles = (element, duration = '1s', delay = '0') => {
-  element.style = `
-    animation: draw ${duration} ease-in forwards ${delay};
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1px;
-  `;
-}
-
-const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier = 1) => {
+const applyAnimationStyles = (elements, animateSpeedMultiplier = 1) => {
   let accumulatedDelay = 0;
-  for (let i = 1; i <= numberOfPaths; i++) {
-    const id = `${pathId}${i}`;
-    const element = document.getElementById(id);
-    
+  elements.forEach((element) => {
     const pathLength = element.getTotalLength() * animateSpeedMultiplier;
     const duration = `${pathLength}ms`;
     const delay = `${accumulatedDelay}ms`;
     
-    const handler = hasTurnedVisible(element, () => applyAnimationStyles(element, duration, delay));
-    
-    handler();
-    window.addEventListener('scroll', handler);
+    element.style = `
+      animation: draw ${duration} ease-in forwards ${delay};
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1px;
+    `;
   
     accumulatedDelay = pathLength + accumulatedDelay + 100; // add 100ms to add small pause between drawing strokes
-  }
+  });
 }
 
-animatePathsById('pawn', 14, 1);
-animatePathsById('bishop', 21, 1);
+const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier) => {
+  const handler = hasTurnedVisible(pathId, numberOfPaths, (elements) => 
+    applyAnimationStyles(elements, animateSpeedMultiplier)
+  );
+  
+  handler();
+  window.addEventListener('scroll', handler);
+}
+
+// baseId, numberOfPaths, animationSpeedMultiplier
+const svgsToAnimate = [
+  ['pawn', 14, 1],
+  ['bishop', 21, 1],
+];
+
+// hide all elements in the beginning
+// will be overriden by animation
+const svgIds = svgsToAnimate.map((params) => params[0]);
+Array.from(document.getElementsByTagName('path')).forEach(element => {
+  if (svgIds.some((id) => element.id.startsWith(id))) {
+    element.style = 'opacity: 0';
+  }
+});
+
+svgsToAnimate.forEach((params) => {
+  animatePathsById(params[0], params[1], params[2]);
+});
