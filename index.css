@@ -1,12 +1,6 @@
-/* .animate {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw 1s ease-in forwards;
-} */
-
 @keyframes draw {
   from {
-    stroke-dashoffset: 1;
+    stroke-dashoffset: 1px;
   }
 
   to {

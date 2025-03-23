@@ -25,17 +25,31 @@ const hasTurnedVisible = (el, callback) => {
   }
 }
 
-const getAnimationStyles = (duration) => `
-  animation: draw ${duration} ease-in forwards;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-`;
+const applyAnimationStyles = (element, duration = '1s', delay = '0') => {
+  element.style = `
+    animation: draw ${duration} ease-in forwards ${delay};
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1px;
+  `;
+}
 
-// const testEl = document.getElementById('test');
+const animatePathsById = (pathId, animateSpeedMultiplier = 1) => {
+  let accumulatedDelay = 0;
+  for (let i = 1; i <= 14; i++) {
+    const id = `${pathId}${i}`;
+    const element = document.getElementById(id);
+    
+    const pathLength = element.getTotalLength() * animateSpeedMultiplier;
+    const duration = `${pathLength}ms`;
+    const delay = `${accumulatedDelay}ms`;
+    
+    const handler = hasTurnedVisible(element, () => applyAnimationStyles(element, duration, delay));
+    
+    handler();
+    window.addEventListener('scroll', handler);
+  
+    accumulatedDelay = pathLength + accumulatedDelay;
+  }
+}
 
-// const handler = hasTurnedVisible(testEl, () => {
-//   console.log('visible!');
-// });
-
-// handler();
-// window.addEventListener('scroll', handler);
+animatePathsById('pawn', 0.8);
