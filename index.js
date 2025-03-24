@@ -82,5 +82,5 @@ Array.from(document.getElementsByTagName('path')).forEach(element => {
 });
 
 svgsToAnimate.forEach((params) => {
-  animatePathsById(params[0], params[1], params[2], params[3]);
+  animatePathsById(...params);
 });
