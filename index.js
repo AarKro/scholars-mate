@@ -9,22 +9,29 @@ const isElementInViewport = (el) => {
   );
 }
 
-const hasTurnedVisible = (pathId, numberOfPaths, callback) => {
+const hasTurnedVisible = (pathId, numberOfPaths, ignoredVisibilityChecks = [], callback) => {
   let visibility = false;
 
   const elements = [];
+  const ignoreVisibility = [];
   for (let i = 1; i <= numberOfPaths; i++) {
     const id = `${pathId}${i}`;
     const element = document.getElementById(id);
     elements.push(element);
+
+    if (ignoredVisibilityChecks.includes(i)) {
+      ignoreVisibility.push(id);
+    }
   }
 
   return () => {
     if (visibility) {
       return;
     }
-
-    const isVisible = elements.every((el) => isElementInViewport(el));
+    
+    const isVisible = elements
+      .filter((el) => !ignoreVisibility.includes(el.id))
+      .every((el) => isElementInViewport(el));
 
     if (isVisible) {
       visibility = true;
@@ -50,8 +57,8 @@ const applyAnimationStyles = (elements, animateSpeedMultiplier = 1) => {
   });
 }
 
-const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier) => {
-  const handler = hasTurnedVisible(pathId, numberOfPaths, (elements) => 
+const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier, ignoredVisibilityChecks) => {
+  const handler = hasTurnedVisible(pathId, numberOfPaths, ignoredVisibilityChecks, (elements) => 
     applyAnimationStyles(elements, animateSpeedMultiplier)
   );
   
@@ -59,10 +66,10 @@ const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier) => {
   window.addEventListener('scroll', handler);
 }
 
-// baseId, numberOfPaths, animationSpeedMultiplier
+// baseId, numberOfPaths, animationSpeedMultiplier, ids which are ignored for visibility checks
 const svgsToAnimate = [
-  ['pawn', 14, 1],
-  ['bishop', 21, 1],
+  ['pawn', 14, 1, [1, 2, 3, 4, 5, 6, 7, 8]],
+  ['bishop', 21, 1, []],
 ];
 
 // hide all elements in the beginning
@@ -75,5 +82,5 @@ Array.from(document.getElementsByTagName('path')).forEach(element => {
 });
 
 svgsToAnimate.forEach((params) => {
-  animatePathsById(params[0], params[1], params[2]);
+  animatePathsById(params[0], params[1], params[2], params[3]);
 });
