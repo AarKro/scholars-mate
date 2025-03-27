@@ -52,6 +52,7 @@ const applyAnimationStyles = (elements, animationSpeed = 1) => {
       element.style = `
         stroke-dasharray: 1;
         stroke-dashoffset: 1px;
+        stroke-opacity: 0;
         animation: draw ${duration} ease-out forwards ${delay};
       `;
     
