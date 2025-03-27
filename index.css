@@ -4,6 +4,16 @@
   margin: 0;
 }
 
+body {
+  display: flex;
+  justify-content: center;
+  background-color: #eee;
+}
+
+.svg-root {
+  max-width: 1500px;
+}
+
 @keyframes draw {
   from {
     stroke-dashoffset: 1px;
