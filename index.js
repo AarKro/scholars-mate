@@ -68,8 +68,16 @@ const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier, ignored
 
 // baseId, numberOfPaths, animationSpeedMultiplier, ids which are ignored for visibility checks
 const svgsToAnimate = [
-  ['pawn', 14, 1, [1, 2, 3, 4, 5, 6, 7, 8]],
-  ['bishop', 21, 1, []],
+  ['intro_', 16, 1, []],
+  ['step_1_', 11, 1, []],
+  ['step_2_', 26, 1, []],
+  ['step_2_black_', 6, 1, []],
+  ['step_3_', 22, 1, []],
+  ['step_3_black_', 6, 1, []],
+  ['step_4_', 43, 1, []],
+  ['arrow_5_', 2, 1, []],
+  ['arrow_6_', 2, 1, []],
+  ['defense_', 17, 1, []],
 ];
 
 // hide all elements in the beginning
