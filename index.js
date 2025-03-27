@@ -9,19 +9,14 @@ const isElementInViewport = (el) => {
   );
 }
 
-const hasTurnedVisible = (pathId, numberOfPaths, ignoredVisibilityChecks = [], callback) => {
+const hasTurnedVisible = (pathId, numberOfPaths, callback) => {
   let visibility = false;
 
   const elements = [];
-  const ignoreVisibility = [];
   for (let i = 1; i <= numberOfPaths; i++) {
     const id = `${pathId}${i}`;
     const element = document.getElementById(id);
     elements.push(element);
-
-    if (ignoredVisibilityChecks.includes(i)) {
-      ignoreVisibility.push(id);
-    }
   }
 
   return () => {
@@ -29,9 +24,7 @@ const hasTurnedVisible = (pathId, numberOfPaths, ignoredVisibilityChecks = [], c
       return;
     }
     
-    const isVisible = elements
-      .filter((el) => !ignoreVisibility.includes(el.id))
-      .every((el) => isElementInViewport(el));
+    const isVisible = elements.every((el) => isElementInViewport(el));
 
     if (isVisible) {
       visibility = true;
@@ -100,8 +93,8 @@ const applyAnimationStyles = (elements, animationSpeed = 1) => {
   }
 }
 
-const animatePathsById = (pathId, numberOfPaths, animationSpeed, ignoredVisibilityChecks) => {
-  const handler = hasTurnedVisible(pathId, numberOfPaths, ignoredVisibilityChecks, (elements) => 
+const animatePathsById = (pathId, numberOfPaths, animationSpeed) => {
+  const handler = hasTurnedVisible(pathId, numberOfPaths, (elements) => 
     applyAnimationStyles(elements, animationSpeed)
   );
   
@@ -109,18 +102,18 @@ const animatePathsById = (pathId, numberOfPaths, animationSpeed, ignoredVisibili
   window.addEventListener('scroll', handler);
 }
 
-// baseId, numberOfPaths, animationSpeed, ids which are ignored for visibility checks
+// baseId, numberOfPaths, animationSpeed
 const svgsToAnimate = [
-  ['intro_', 16, 0.5, []],
-  ['step_1_', 11, 0.7, []],
-  ['step_2_', 26, 0.5, []],
-  ['step_2_black_', 6, 0.7, []],
-  ['step_3_', 22, 0.5, []],
-  ['step_3_black_', 6, 0.7, []],
-  ['step_4_', 43, 0.3, []],
-  ['arrow_5_', 2, 0.7, []],
-  ['arrow_6_', 2, 0.7, []],
-  ['defense_', 21, 0.5, []],
+  ['intro_', 16, 0.5],
+  ['step_1_', 11, 0.7],
+  ['step_2_', 26, 0.5],
+  ['step_2_black_', 6, 0.7],
+  ['step_3_', 22, 0.5],
+  ['step_3_black_', 6, 0.7],
+  ['step_4_', 43, 0.3],
+  ['arrow_5_', 2, 0.7],
+  ['arrow_6_', 2, 0.7],
+  ['defense_', 21, 0.5],
 ];
 
 // hide all elements in the beginning
