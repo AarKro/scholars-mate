@@ -84,18 +84,20 @@ const applyAnimationStyles = (elements, animationSpeed = 1) => {
   });
 
   // applay trumpet animation & sound effect
-  const soundLeftSubElement = elements.find((element) => element.parentElement.id.startsWith('sound left'));
-  const soundRightSubElement = elements.find((element) => element.parentElement.id.startsWith('sound right'));
-  setTimeout(() => {
-    soundLeftSubElement.parentElement.style = `
+  if (elements[elements.length - 1].parentElement.id.startsWith('sound')){
+    const soundLeftSubElement = elements.find((element) => element.parentElement.id.startsWith('sound left'));
+    const soundRightSubElement = elements.find((element) => element.parentElement.id.startsWith('sound right'));
+    setTimeout(() => {
+      soundLeftSubElement.parentElement.style = `
       animation: trumpet 3000ms forwards step-end;
-    `;
-    soundRightSubElement.parentElement.style = `
+      `;
+      soundRightSubElement.parentElement.style = `
       animation: trumpet 3000ms forwards step-end;
-    `;
-    
-    new Audio('./trumpet.mp3').play();
-  }, accumulatedDelay);
+      `;
+      
+      new Audio('./trumpet.mp3').play();
+    }, accumulatedDelay);
+  }
 }
 
 const animatePathsById = (pathId, numberOfPaths, animationSpeed, ignoredVisibilityChecks) => {
@@ -132,4 +134,10 @@ Array.from(document.getElementsByTagName('path')).forEach(element => {
 
 svgsToAnimate.forEach((params) => {
   animatePathsById(...params);
+});
+
+// prevent flickering on load
+window.addEventListener('DOMContentLoaded', () => {
+  const root = document.getElementById('svg-root');
+  root.style = "opacity: 1";
 });
