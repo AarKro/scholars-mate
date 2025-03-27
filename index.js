@@ -40,44 +40,85 @@ const hasTurnedVisible = (pathId, numberOfPaths, ignoredVisibilityChecks = [], c
   }
 }
 
-const applyAnimationStyles = (elements, animateSpeedMultiplier = 1) => {
+const applyAnimationStyles = (elements, animationSpeed = 1) => {
   let accumulatedDelay = 0;
   elements.forEach((element) => {
-    const pathLength = element.getTotalLength() * animateSpeedMultiplier;
-    const duration = `${pathLength}ms`;
     const delay = `${accumulatedDelay}ms`;
+
+    if (element.dataset.highlight) {
+      element.style = `
+        animation: appear 200ms ease-in forwards ${delay};
+      `;
+
+      accumulatedDelay = 200 + accumulatedDelay + 100; // add 100ms to add small pause between drawing strokes
+    } else {
+      const pathLength = element.getTotalLength() * animationSpeed;
+      const duration = `${pathLength}ms`;
+      const delay = `${accumulatedDelay}ms`;
+      
+      element.style = `
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1px;
+        animation: draw ${duration} ease-out forwards ${delay};
+      `;
     
-    element.style = `
-      animation: draw ${duration} ease-in forwards ${delay};
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1px;
-    `;
-  
-    accumulatedDelay = pathLength + accumulatedDelay + 100; // add 100ms to add small pause between drawing strokes
+      accumulatedDelay = pathLength + accumulatedDelay + 100; // add 100ms to add small pause between drawing strokes
+    }
   });
+
+  // apply additional animations with timeout, so they only start after draw animation
+  elements.forEach((element) => {
+    if (element.dataset.jitter) {
+      setTimeout(() => {
+        element.style = `
+          animation: jitter 1500ms infinite step-end;
+        `;
+      }, accumulatedDelay);
+    } else if (element.parentElement.id.startsWith('arrow')) {
+      setTimeout(() => {
+        element.parentElement.style = `
+          animation: jitter-arrow 1500ms infinite step-end;
+        `;
+      }, accumulatedDelay);
+    }
+  });
+
+  // applay trumpet animation & sound effect
+  const soundLeftSubElement = elements.find((element) => element.parentElement.id.startsWith('sound left'));
+  const soundRightSubElement = elements.find((element) => element.parentElement.id.startsWith('sound right'));
+  setTimeout(() => {
+    soundLeftSubElement.parentElement.style = `
+      animation: trumpet 3000ms forwards step-end;
+    `;
+    soundRightSubElement.parentElement.style = `
+      animation: trumpet 3000ms forwards step-end;
+    `;
+    
+    new Audio('./trumpet.mp3').play();
+  }, accumulatedDelay);
 }
 
-const animatePathsById = (pathId, numberOfPaths, animateSpeedMultiplier, ignoredVisibilityChecks) => {
+const animatePathsById = (pathId, numberOfPaths, animationSpeed, ignoredVisibilityChecks) => {
   const handler = hasTurnedVisible(pathId, numberOfPaths, ignoredVisibilityChecks, (elements) => 
-    applyAnimationStyles(elements, animateSpeedMultiplier)
+    applyAnimationStyles(elements, animationSpeed)
   );
   
   handler();
   window.addEventListener('scroll', handler);
 }
 
-// baseId, numberOfPaths, animationSpeedMultiplier, ids which are ignored for visibility checks
+// baseId, numberOfPaths, animationSpeed, ids which are ignored for visibility checks
 const svgsToAnimate = [
-  ['intro_', 16, 1, []],
-  ['step_1_', 11, 1, []],
-  ['step_2_', 26, 1, []],
-  ['step_2_black_', 6, 1, []],
-  ['step_3_', 22, 1, []],
-  ['step_3_black_', 6, 1, []],
-  ['step_4_', 43, 1, []],
-  ['arrow_5_', 2, 1, []],
-  ['arrow_6_', 2, 1, []],
-  ['defense_', 17, 1, []],
+  ['intro_', 16, 0.5, []],
+  ['step_1_', 11, 0.7, []],
+  ['step_2_', 26, 0.5, []],
+  ['step_2_black_', 6, 0.7, []],
+  ['step_3_', 22, 0.5, []],
+  ['step_3_black_', 6, 0.7, []],
+  ['step_4_', 43, 0.3, []],
+  ['arrow_5_', 2, 0.7, []],
+  ['arrow_6_', 2, 0.7, []],
+  ['defense_', 21, 0.5, []],
 ];
 
 // hide all elements in the beginning
