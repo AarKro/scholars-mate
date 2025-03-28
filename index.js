@@ -89,7 +89,7 @@ const applyAnimationStyles = (elements, animationSpeed = 1) => {
       animation: trumpet 3000ms forwards step-end;
       `;
       
-      new Audio('./trumpet.mp3').play();
+      new Audio('./assets/trumpet.mp3').play();
     }, accumulatedDelay);
   }
 }
