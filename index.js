@@ -115,6 +115,7 @@ const svgsToAnimate = [
   ['arrow_5_', 2, 0.7],
   ['arrow_6_', 2, 0.7],
   ['defense_', 21, 0.5],
+  ['footer_line_', 1, 0.7],
 ];
 
 // hide all elements in the beginning

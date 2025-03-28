@@ -2,12 +2,13 @@ body {
   margin: 0;
   display: flex;
   justify-content: center;
-  background-color: #eee;
+  background-color: #ededed;
 }
 
 #svg-root {
   max-width: 1500px;
   opacity: 0;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
 @keyframes draw {
